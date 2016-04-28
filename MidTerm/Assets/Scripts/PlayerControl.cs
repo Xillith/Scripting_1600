@@ -3,6 +3,41 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class PlayerControl : MonoBehaviour {
+
+
+    /*
+   * Additional Variables:
+   * A public GameObject that will hold the reference to the bullet prefab
+   */
+
+    /*
+     * Additional Lines in the Update Function:
+     *      If (the space bar is pressed down *see below for instructions*)
+     *          Instantiate using the bullet prefab, this object's transform, and this object's rotation
+     */
+
+    /* **************Explanation and Hints************ 
+     * Prefab - They are GameObjects that are stored outside of the scene. We use them to instantiate      
+     *          GameObjects. 
+     *
+     * Instantiate - This will create a new GameObject or prefab of our choosing. In this script we want to
+     *               create bullets. We will create the bullets at the players position and we will
+     *               have the bullet match the rotation of the player. To do so we will type:
+     *             
+     *               Instantiate(*nameOfBulletVariable*, transform.position, transform.rotation);
+     *
+     * Pressing Space Bar - When shooting we want to use a different key press then the others. For this we
+     *                      will be using Input.GetKeyDown. The reason why is because GetKeyDown only activates
+     *                      once while GetKey activates multiple times. GetKeyDown is typed like this:
+     *              
+     *                      if(Input.GetKeyDown(KeyCode.Space))
+     *                      {
+     *                          //Instantiate bullet here
+     *                      }
+     */
+
+
+
     /* 
      * Variables:
      * A public float for rotation speed
@@ -13,6 +48,8 @@ public class PlayerControl : MonoBehaviour {
     public float MovementSpeed=20;
     private Rigidbody PlyrBdy;
     public static bool GameOver;
+    public GameObject bulletobj;
+    public int CurrentBuff;
 
     /*
      * The Start function, void return type, no parameters
@@ -22,6 +59,7 @@ public class PlayerControl : MonoBehaviour {
     {
         PlyrBdy=GetComponent<Rigidbody>();
         GameOver = false;
+        CurrentBuff = 0;
 
     }
 
@@ -48,9 +86,58 @@ public class PlayerControl : MonoBehaviour {
                 //move back
                 PlyrBdy.AddRelativeForce(0, 0, -MovementSpeed);
             }
+
+            if (Input.GetKeyDown(KeyCode.Space))
+             {
+                //Instantiate bullet here
+                
+                Instantiate(bulletobj, transform.position, transform.rotation);
+                GetComponent<AudioSource>().Play();
+
+               
+ 
+                if (CurrentBuff >= 2) {
+                  Instantiate(bulletobj, transform.position, transform.rotation*Quaternion.Euler(new Vector3(0, 45, 0)));                 
+                }
+                if (CurrentBuff >= 1)
+                {
+                    Instantiate(bulletobj, transform.position, transform.rotation * Quaternion.Euler(new Vector3(0, 315, 0)));
+
+                }
+
+                if (CurrentBuff >= 3)
+                {
+                   Instantiate(bulletobj, transform.position, transform.rotation * Quaternion.Euler(new Vector3(0, 90, 0)));
+                }
+                if (CurrentBuff >= 4)
+                {
+                    Instantiate(bulletobj, transform.position, transform.rotation * Quaternion.Euler(new Vector3(0, 270, 0)));
+
+                }
+                if (CurrentBuff >= 5)
+                {
+                    Instantiate(bulletobj, transform.position, transform.rotation * Quaternion.Euler(new Vector3(0, 135, 0)));
+
+                }
+                if (CurrentBuff >= 6)
+                {
+                    Instantiate(bulletobj, transform.position, transform.rotation * Quaternion.Euler(new Vector3(0, 225, 0)));
+                }
+                if (CurrentBuff >= 7)
+                {
+                  Instantiate(bulletobj, transform.position, transform.rotation * Quaternion.Euler(new Vector3(0, 180, 0)));
+                }
+               
+               
+               
+
+
+            }
         }
+
+            
          
-            if (Input.GetKey(KeyCode.Space)&& GameOver==true) {
+            if (Input.GetKey(KeyCode.Return)&& GameOver==true) {
                 //Restart Game
                 SceneManager.LoadScene("StartOfGame");
                       

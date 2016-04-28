@@ -69,8 +69,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\FlyScript.cs" />
+    <Compile Include="Assets\IfStatements.cs" />
     <Compile Include="Assets\Lab1.cs" />
     <Compile Include="Assets\Lab2.cs" />
+    <Compile Include="Assets\LoopProject.cs" />
+    <Compile Include="Assets\Scope2.cs" />
+    <Compile Include="Assets\ScopeAndAccess.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

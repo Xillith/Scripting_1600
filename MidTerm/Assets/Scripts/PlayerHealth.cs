@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class PlayerHealth : MonoBehaviour {
     /* 
@@ -8,14 +9,51 @@ public class PlayerHealth : MonoBehaviour {
      * A private int for the health
      * A private int for the damage amount
      */
-    public TextMesh Health;
+    public TextMesh Health, Points;
     public TextMesh LoseText, RestartTxt;
     public GameObject HealthBar;
     private int HP;
     private int Damage;
+    private int POINTS;
+    private int NextBonus;
+    public GameObject SpawnUpgrade;
+    public GameObject SpawnTree;
+    public AudioClip ImHit;
+
+    internal void resetHealth()
+    {
+        while (HP < 100)
+        {
+            HealthBar.transform.localScale -= new Vector3(-.59f, 0, 0);
+            HealthBar.transform.Translate(.45f, 0, 0, Space.Self);
+            HP += Damage;
+        }
+        Health.text = "Health: " + HP + "/100";
+
+    }
+
  
 
+    public void AddPoints(int points) {
+        POINTS += points;
+        if (POINTS >= NextBonus) {
+            System.Random random = new System.Random();
+            int randomNumber = random.Next(-30, 30);
+            int randomNumber2 = random.Next(-30, 30);
 
+            Vector3 PositUpgrd = new Vector3(randomNumber, 1.37f, randomNumber2);
+            Instantiate(SpawnUpgrade, PositUpgrd, SpawnUpgrade.transform.rotation);
+
+            randomNumber = random.Next(-30, 30);
+            randomNumber2 = random.Next(-30, 30);
+            PositUpgrd = new Vector3(randomNumber, 0, randomNumber2);
+            Instantiate(SpawnTree, PositUpgrd, SpawnTree.transform.rotation);
+
+            NextBonus = NextBonus*2;
+        }
+        
+
+    }
     /*
      * The Start function, void return type, no parameters
      *      Set the initial value for the health variable
@@ -27,6 +65,10 @@ public class PlayerHealth : MonoBehaviour {
         Health.text = "Health: " + HP+"/100";
         LoseText.text = "";
         RestartTxt.text = "";
+        Points.text = "Points: 0";
+        POINTS = 0;
+        NextBonus = 1000;
+
 
 
     }
@@ -46,8 +88,10 @@ public class PlayerHealth : MonoBehaviour {
     void OnCollisionEnter(Collision Hit) {
         if (Hit.transform.tag == "Enemy")
         {
-           // print("Enemy "+Hit.gameObject.GetType());
-            
+            AudioSource.PlayClipAtPoint(ImHit, transform.position, 10f);
+            // print("Enemy "+Hit.gameObject.GetType());
+            EnemyDamage Enemy= Hit.transform.GetComponent<EnemyDamage>();
+
             if (HP > 0)
             {
                 HP -= Damage;
@@ -58,17 +102,37 @@ public class PlayerHealth : MonoBehaviour {
             }
             if (HP <= 0) {
                 LoseText.text = "You Lose...";
-                RestartTxt.text = "Press Space Bar To Try Again";
+                RestartTxt.text = "Press Enter key To Try Again";
                 PlayerControl.GameOver = true;
             }
+
+            //When hit a certain number of times by an enemy, that enemy dies without giving you points.
+            if (Enemy.Attacks == 1)
+            {
+                Destroy(Enemy.gameObject);
+            }
+            else {
+                Enemy.Attacks--;
+            }
+           
+
+            
             //Call Damage Function
             //Set Health Text, unless you lose. Then you lose. 
         }
         else if (Hit.transform.tag == "KillZone") {
             LoseText.text = "You Lose...";
-            RestartTxt.text = "Press Space Bar To Try Again";
+            RestartTxt.text = "Press Enter key To Try Again";
             PlayerControl.GameOver = true;
             //GoTo You Lose Function
+        }
+    }
+
+    internal void RefreshPoints()
+    {
+        Points.text = "Points: "+POINTS;
+        if (POINTS >= NextBonus) {
+
         }
     }
 
